@@ -28,7 +28,11 @@ module Dip
           argv.unshift("run")
         end
 
-        super(Dip::RunVars.call(argv, ENV))
+        if cmd && Dip.config.exist? && Dip.config.commands.key?(cmd.to_sym)
+          Dip.config.commands[cmd.to_sym].execute
+        else
+          super(Dip::RunVars.call(argv, ENV))
+        end
       end
     end
 

@@ -6,6 +6,7 @@ require "pathname"
 
 require "dip/version"
 require "dip/ext/hash"
+require "dip/command"
 
 using ActiveSupportHashHelpers
 
@@ -19,10 +20,11 @@ module Dip
       kubectl: {},
       infra: {},
       interaction: {},
-      provision: []
+      provision: [],
+      commands: {}
     }.freeze
 
-    TOP_LEVEL_KEYS = %i[environment compose kubectl infra interaction provision].freeze
+    TOP_LEVEL_KEYS = %i[environment compose kubectl infra interaction provision commands].freeze
 
     ConfigKeyMissingError = Class.new(ArgumentError)
 
@@ -155,6 +157,29 @@ module Dip
       base_config.deep_merge!(self.class.load_yaml(override_finder.file_path)) if override_finder.exist?
 
       @config = CONFIG_DEFAULTS.merge(base_config)
+
+      parse_commands(@config[:commands])
+    end
+
+    def parse_commands(commands)
+      commands.each do |name, command|
+        @config[:commands][name] = parse_command(command)
+      end
+    end
+
+    def parse_command(command)
+      case command
+      when String
+        SimpleCommand.new(*command.split(" ", 2))
+      when Hash
+        command.each_with_object({}) do |(bin, args), memo|
+          memo[bin] = parse_command(args)
+        end
+      when Array
+        SequenceCommand.new(command.map { |cmd| parse_command(cmd) })
+      else
+        raise ArgumentError, "Invalid command format: #{command.inspect}"
+      end
     end
 
     def config_missing_error(config_key)
