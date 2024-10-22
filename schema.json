@@ -216,7 +216,12 @@
           "description": "Specifies the Kubernetes pod associated with the command"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "oneOf": [
+        { "required": ["command"] },
+        { "required": ["subcommands"] },
+        { "required": ["command", "subcommands"] }
+      ]
     }
   }
 }
