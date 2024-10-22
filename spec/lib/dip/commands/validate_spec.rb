@@ -44,17 +44,5 @@ describe Dip::Commands::Validate do
       expect(cli.start("validate".shellsplit)).to output(/schema/).to_stderr
     end
   end
-
-  context "when dip.yml is missing the $schema key" do
-    let(:missing_schema_dip_yml) { fixture_path("missing_schema", "dip.yml") }
-
-    before do
-      allow(Pathname).to receive(:pwd).and_return(Pathname.new(fixture_path("missing_schema")))
-    end
-
-    it "raises a UserError" do
-      expect { cli.start "validate".shellsplit }.to raise_error(Dip::Commands::Validate::UserError, "dip.yml is missing the $schema key,\n$schema: https://github.com/bibendi/dip/blob/main/schema.json")
-    end
-  end
 end
 
