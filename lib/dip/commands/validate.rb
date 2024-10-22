@@ -1,14 +1,17 @@
-require 'json'
-require 'yaml'
-require 'json-schema'
+# frozen_string_literal: true
+
+require "json"
+require "yaml"
+require "json-schema"
 require_relative "../command"
 
 module Dip
   module Commands
     class Validate < Dip::Command
       def execute
-        schema_path = File.join(Dir.pwd, 'schema.json')
-        dip_yml_path = File.join(Dir.pwd, 'dip.yml')
+        root_path = Pathname.new(__dir__).join("..", "..", "..")
+        schema_path = root_path.join("schema.json")
+        dip_yml_path = root_path.join("dip.yml")
 
         unless File.exist?(schema_path)
           puts "Error: schema.json not found in the current directory."
