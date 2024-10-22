@@ -35,7 +35,8 @@
           "description": "Specifies the Docker Compose method to use",
           "examples": ["up", "run"]
         }
-      }
+      },
+      "required": ["files"]
     },
     "interaction": {
       "type": "object",
@@ -44,7 +45,8 @@
         "^[a-zA-Z0-9_]+$": {
           "$ref": "#/definitions/interactionCommand"
         }
-      }
+      },
+      "minProperties": 1
     },
     "provision": {
       "type": "array",
@@ -98,7 +100,8 @@
               "type": "string",
               "description": "Specifies the local path to the service"
             }
-          }
+          },
+          "required": ["git", "ref"]
         }
       }
     }
@@ -206,6 +209,7 @@
           "description": "Specifies the Kubernetes pod associated with the command"
         }
       },
+      "required": ["service"],
       "additionalProperties": false
     }
   }

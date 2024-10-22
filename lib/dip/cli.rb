@@ -131,6 +131,7 @@ module Dip
     desc "console", "Integrate Dip commands into shell (only ZSH and Bash are supported)"
     subcommand :console, Dip::CLI::Console
 
+    require_relative "commands/validate"
     desc "validate", "Validate dip.yml against local schema"
     def validate
       Dip::Commands::Validate.new.execute
