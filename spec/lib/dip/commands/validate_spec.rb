@@ -46,4 +46,3 @@ describe Dip::Commands::Validate do
     end
   end
 end
-
