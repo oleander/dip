@@ -25,8 +25,8 @@ describe Dip::Commands::Validate do
   context "when dip.yml is missing" do
     let(:working_directory) { fixture_path("missing") }
 
-    it "raises a UserError" do
-      expect { result }.to output("").to_stdout
+    it "outputs a warning message" do
+      expect { result }.to output(/missing/i).to_stderr
     end
   end
 
@@ -34,7 +34,7 @@ describe Dip::Commands::Validate do
     let(:working_directory) { fixture_path("invalid-with-schema") }
 
     it "outputs an error message" do
-      expect { result }.to output(/Invalid/).to_stderr
+      expect { result }.to output(/invalid/i).to_stderr
     end
   end
 
@@ -42,7 +42,7 @@ describe Dip::Commands::Validate do
     let(:working_directory) { fixture_path("no-schema") }
 
     it "outputs a warning message" do
-      expect { result }.to output(/schema/).to_stderr
+      expect { result }.to output(/schema/i).to_stderr
     end
   end
 end
