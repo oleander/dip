@@ -15,10 +15,10 @@ describe Dip::Commands::Validate do
   end
 
   context "when dip.yml is valid" do
-    let(:working_directory) { fixture_path("valid") }
+    let(:working_directory) { fixture_path("with-schema") }
 
     it "outputs a success message" do
-      expect { result }.to output(//).to_stdout
+      expect { result }.to output(/dip/i).to_stdout
     end
   end
 
