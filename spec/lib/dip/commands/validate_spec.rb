@@ -30,14 +30,14 @@ describe Dip::Commands::Validate do
   end
 
   context "when dip.yml is invalid" do
-    let(:working_directory) { fixture_path("invalid") }
+    let(:working_directory) { fixture_path("invalid-with-schema") }
 
     it "raises a ValidationError" do
       cli.start "validate".shellsplit
     end
   end
 
-  fcontext "when schema.json is missing" do
+  context "when schema.json is missing" do
     let(:working_directory) { fixture_path("no-schema") }
 
     it "raises a UserError" do
