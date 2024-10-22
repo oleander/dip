@@ -2,7 +2,6 @@
 
 require "thor"
 require "dip/run_vars"
-require "json-schema"
 
 module Dip
   class CLI < Thor

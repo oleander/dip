@@ -15,7 +15,7 @@ module Dip
       def execute(output = $stdout)
         root_path = Pathname.new(__dir__).join("../../..")
         schema_path = root_path.join("schema.json")
-        dip_yml_path = root_path.join("dip.yml")
+        dip_yml_path = Pathname.pwd.join("dip.yml")
 
         unless schema_path.exist?
           raise UserError, "schema.json not found in the current directory"
