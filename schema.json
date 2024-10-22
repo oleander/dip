@@ -6,8 +6,7 @@
     "version": {
       "type": "string",
       "description": "Specifies the minimum required version of Dip",
-      "examples": ["7", "8.0", "8.1.0"],
-      "errorMessage": "The 'version' field is required and must be a string."
+      "examples": ["7", "8.0", "8.1.0"]
     },
     "compose": {
       "type": "object",
@@ -19,29 +18,24 @@
             "type": "string"
           },
           "description": "Array of strings representing paths to Docker Compose files",
-          "examples": ["docker-compose.yml", "docker-compose.override.yml"],
-          "errorMessage": "Error in 'compose.files': must be an array of strings."
+          "examples": ["docker-compose.yml", "docker-compose.override.yml"]
         },
         "project_name": {
           "type": "string",
           "description": "Specifies the project name for Docker Compose",
-          "examples": ["my_project", "web_app", "backend_service"],
-          "errorMessage": "Error in 'compose.project_name': must be a string."
+          "examples": ["my_project", "web_app", "backend_service"]
         },
         "command": {
           "type": "string",
           "description": "Specifies an alternative Docker Compose command",
-          "examples": ["docker-compose", "docker compose"],
-          "errorMessage": "Error in 'compose.command': must be a string."
+          "examples": ["docker-compose", "docker compose"]
         },
         "compose_method": {
           "type": "string",
           "description": "Specifies the Docker Compose method to use",
-          "examples": ["up", "run"],
-          "errorMessage": "Error in 'compose.compose_method': must be a string."
+          "examples": ["up", "run"]
         }
-      },
-      "errorMessage": "Error in 'compose': must be an object with properties 'files', 'project_name', 'command', and 'compose_method'."
+      }
     },
     "interaction": {
       "type": "object",
@@ -50,16 +44,14 @@
         "^[a-zA-Z0-9_]+$": {
           "$ref": "#/definitions/interactionCommand"
         }
-      },
-      "errorMessage": "Error in 'interaction': must be an object with valid command configurations."
+      }
     },
     "provision": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "Lists the commands to be executed for provisioning",
-      "errorMessage": "Error in 'provision': must be an array of strings."
+      "description": "Lists the commands to be executed for provisioning"
     },
     "environment": {
       "type": "object",
@@ -68,8 +60,7 @@
         "^[a-zA-Z_][a-zA-Z0-9_]*$": {
           "type": "string"
         }
-      },
-      "errorMessage": "Error in 'environment': must be an object with properties representing environment variables, each being a string."
+      }
     },
     "kubectl": {
       "type": "object",
@@ -77,19 +68,16 @@
       "properties": {
         "namespace": {
           "type": "string",
-          "description": "Specifies the Kubernetes namespace to use",
-          "errorMessage": "Error in 'kubectl.namespace': must be a string."
+          "description": "Specifies the Kubernetes namespace to use"
         }
-      },
-      "errorMessage": "Error in 'kubectl': must be an object with properties representing Kubernetes configuration."
+      }
     },
     "modules": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "Array of strings representing the names of module files to be included",
-      "errorMessage": "Error in 'modules': must be an array of strings representing module file names."
+      "description": "Array of strings representing the names of module files to be included"
     },
     "infra": {
       "type": "object",
@@ -110,13 +98,13 @@
               "type": "string",
               "description": "Specifies the local path to the service"
             }
-          },
-          "errorMessage": "Error in 'infra': must be an object with properties representing infrastructure services, each being an object with 'git', 'ref', and 'path' properties."
+          }
         }
       }
     }
   },
   "required": ["version", "compose", "interaction"],
+  "additionalProperties": false,
   "definitions": {
     "interactionCommand": {
       "type": "object",
@@ -128,20 +116,17 @@
         "service": {
           "type": "string",
           "description": "Specifies the service associated with the command",
-          "examples": ["app", "db", "web", "redis"],
-          "errorMessage": "Error in 'interaction.service': must be a string."
+          "examples": ["app", "db", "web", "redis"]
         },
         "command": {
           "type": "string",
           "description": "Represents the command to be executed",
-          "examples": ["/bin/bash", "./bin/console", "bundle", "bundle exec rspec"],
-          "errorMessage": "Error in 'interaction.command': must be a string."
+          "examples": ["/bin/bash", "./bin/console", "bundle", "bundle exec rspec"]
         },
         "default_args": {
           "type": "string",
           "description": "Specifies default arguments for the command",
-          "examples": ["db_dev"],
-          "errorMessage": "Error in 'interaction.default_args': must be a string."
+          "examples": ["db_dev"]
         },
         "environment": {
           "type": "object",
@@ -150,8 +135,7 @@
             "^[a-zA-Z_][a-zA-Z0-9_]*$": {
               "type": "string"
             }
-          },
-          "errorMessage": "Error in 'interaction.environment': must be an object with properties representing environment variables, each being a string."
+          }
         },
         "compose": {
           "type": "object",
@@ -160,14 +144,12 @@
             "method": {
               "type": "string",
               "description": "Specifies the Docker Compose method (e.g., up, run)",
-              "examples": ["up", "run"],
-              "errorMessage": "Error in 'interaction.compose.method': must be a string."
+              "examples": ["up", "run"]
             },
             "compose_method": {
               "type": "string",
               "description": "Alternative way to specify the Docker Compose method",
-              "examples": ["up", "run"],
-              "errorMessage": "Error in 'interaction.compose.compose_method': must be a string."
+              "examples": ["up", "run"]
             },
             "run_options": {
               "type": "array",
@@ -175,8 +157,7 @@
                 "type": "string"
               },
               "description": "Specifies additional options for Docker Compose run",
-              "examples": ["no-deps", "detach"],
-              "errorMessage": "Error in 'interaction.compose.run_options': must be an array of strings."
+              "examples": ["no-deps", "detach"]
             },
             "compose_run_options": {
               "type": "array",
@@ -184,8 +165,7 @@
                 "type": "string"
               },
               "description": "Alternative way to specify additional options for Docker Compose run",
-              "examples": ["no-deps", "detach"],
-              "errorMessage": "Error in 'interaction.compose.compose_run_options': must be an array of strings."
+              "examples": ["no-deps", "detach"]
             },
             "profiles": {
               "type": "array",
@@ -193,29 +173,24 @@
                 "type": "string"
               },
               "description": "Specifies Docker Compose profiles to use",
-              "examples": ["web", "workers"],
-              "errorMessage": "Error in 'interaction.compose.profiles': must be an array of strings."
+              "examples": ["web", "workers"]
             }
-          },
-          "errorMessage": "Error in 'interaction.compose': must be an object with properties 'method', 'compose_method', 'run_options', 'compose_run_options', and 'profiles'."
+          }
         },
         "shell": {
           "type": "boolean",
           "description": "Enables or disables shell interpolation",
-          "examples": [true, false],
-          "errorMessage": "Error in 'interaction.shell': must be a boolean."
+          "examples": [true, false]
         },
         "entrypoint": {
           "type": "string",
           "description": "Specifies the command entrypoint",
-          "examples": ["/env-entrypoint"],
-          "errorMessage": "Error in 'interaction.entrypoint': must be a string."
+          "examples": ["/env-entrypoint"]
         },
         "runner": {
           "type": "string",
           "description": "Specifies the runner (e.g., docker_compose, kubectl)",
-          "examples": ["docker_compose", "kubectl"],
-          "errorMessage": "Error in 'interaction.runner': must be a string."
+          "examples": ["docker_compose", "kubectl"]
         },
         "subcommands": {
           "type": "object",
@@ -224,17 +199,14 @@
             "^[a-zA-Z0-9_]+$": {
               "$ref": "#/definitions/interactionCommand"
             }
-          },
-          "errorMessage": "Error in 'interaction.subcommands': must be an object with valid subcommand configurations."
+          }
         },
         "pod": {
           "type": "string",
-          "description": "Specifies the Kubernetes pod associated with the command",
-          "errorMessage": "Error in 'interaction.pod': must be a string."
+          "description": "Specifies the Kubernetes pod associated with the command"
         }
       },
-      "additionalProperties": false,
-      "errorMessage": "An interaction command can have both a 'command' and 'subcommands', along with other properties."
+      "additionalProperties": false
     }
   }
 }
