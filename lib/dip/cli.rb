@@ -23,17 +23,23 @@ module Dip
       def start(argv)
         argv = Dip::RunVars.call(argv, ENV)
 
-        Dip::Commands::Validate.new.execute(StringIO.new)
-
         cmd = argv.first
+
+        unless cmd.downcase.start_with?("validate")
+          begin
+            Dip::Commands::Validate.new.execute(StringIO.new)
+          rescue Dip::Commands::Validate::UserError => e
+            # NOP
+          rescue Dip::Commands::Validate::ValidationError => e
+            abort e.message
+          end
+        end
 
         if cmd && !TOP_LEVEL_COMMANDS.include?(cmd) && Dip.config.exist? && Dip.config.interaction.key?(cmd.to_sym)
           argv.unshift("run")
         end
 
         super(Dip::RunVars.call(argv, ENV))
-      rescue Dip::Commands::Validate::Error => e
-        abort e.message
       end
     end
 
@@ -126,6 +132,12 @@ module Dip
     desc "validate", "Validate dip.yml against local schema"
     def validate
       Dip::Commands::Validate.new.execute
+    rescue Dip::Commands::Validate::UserError => e
+      warn e.message
+    rescue Dip::Commands::Validate::ValidationError => e
+      abort e.message
+    else
+      puts "dip.yml is valid according to the schema"
     end
 
     require_relative "cli/ssh"
