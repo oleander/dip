@@ -129,7 +129,7 @@ module Dip
     end
 
     require_relative "commands/validate"
-    desc "validate", "Validate dip.yml against local schema"
+    desc "validate", "Validate dip.yml"
     def validate
       Dip::Commands::Validate.new.execute
     rescue Dip::Commands::Validate::UserError => e
