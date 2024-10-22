@@ -40,7 +40,7 @@ describe Dip::Commands::Validate do
   context "when schema.json is missing" do
     let(:working_directory) { fixture_path("no-schema") }
 
-    it "raises a UserError" do
+    it "outputs a warning message" do
       expect(cli.start("validate".shellsplit)).to output(/schema/).to_stderr
     end
   end

@@ -132,9 +132,9 @@ module Dip
     def validate
       Dip::Commands::Validate.new.execute
     rescue Dip::Commands::Validate::UserError => e
-      abort e.message
+      $stderr.puts e.message
     rescue Dip::Commands::Validate::ValidationError => e
-      abort e.message
+      $stderr.puts e.message
     else
       puts "dip.yml is valid according to the schema"
     end
