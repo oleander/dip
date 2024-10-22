@@ -114,16 +114,6 @@ interaction:
     service: web
     command: bundle exec rake
 
-  validate:
-    description: Validate dip.yml against local schema
-    service: app
-    command: ajv validate -s /app/schema.json -d /app/dip.yml
-    compose:
-      method: run
-      run_options:
-        - rm
-    environment:
-      AJV_CLI_VERSION: "5.0.0"
 
 provision:
   - dip compose down --volumes

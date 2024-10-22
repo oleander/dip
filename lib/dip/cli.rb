@@ -3,7 +3,6 @@
 require "thor"
 require "dip/run_vars"
 require "json-schema"
-require "dip/commands/validate"
 
 module Dip
   class CLI < Thor
@@ -119,6 +118,12 @@ module Dip
       end
     end
 
+    require_relative "commands/validate"
+    desc "validate", "Validate dip.yml against local schema"
+    def validate
+      Dip::Commands::Validate.new.execute
+    end
+
     require_relative "cli/ssh"
     desc "ssh", "ssh-agent container commands"
     subcommand :ssh, Dip::CLI::SSH
@@ -131,10 +136,6 @@ module Dip
     desc "console", "Integrate Dip commands into shell (only ZSH and Bash are supported)"
     subcommand :console, Dip::CLI::Console
 
-    require_relative "commands/validate"
-    desc "validate", "Validate dip.yml against local schema"
-    def validate
-      Dip::Commands::Validate.new.execute
-    end
+
   end
 end

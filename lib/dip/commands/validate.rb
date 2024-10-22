@@ -13,26 +13,22 @@ module Dip
         schema_path = root_path.join("schema.json")
         dip_yml_path = root_path.join("dip.yml")
 
-        unless File.exist?(schema_path)
-          puts "Error: schema.json not found in the current directory."
-          exit 1
+        unless schema_path.exist?
+          abort "Error: schema.json not found in the current directory"
         end
 
-        unless File.exist?(dip_yml_path)
-          puts "Error: dip.yml not found in the current directory."
-          exit 1
+        unless dip_yml_path.exist?
+          abort "Error: dip.yml not found in the current directory"
         end
 
-        schema = JSON.parse(File.read(schema_path))
-        dip_config = YAML.safe_load(File.read(dip_yml_path))
+        schema = JSON.parse(schema_path.read)
+        dip_config = YAML.safe_load(dip_yml_path.read)
 
-        begin
-          JSON::Validator.validate!(schema, dip_config)
-          puts "dip.yml is valid according to the schema."
-        rescue JSON::Schema::ValidationError => e
-          puts "Validation error: #{e.message}"
-          exit 1
-        end
+        JSON::Validator.validate!(schema, dip_config)
+      rescue JSON::Schema::ValidationError => e
+        abort "Validation error: #{e.message}"
+      else
+        puts "dip.yml is valid according to the schema"
       end
     end
   end
