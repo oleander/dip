@@ -12,7 +12,7 @@ module Dip
       ValidationError = Class.new(Error)
       UserError = Class.new(Error)
 
-      def execute(output = $stdout)
+      def execute
         root_path = Pathname.new(__dir__).join("../../..")
         schema_path = root_path.join("schema.json")
         dip_yml_path = Pathname.pwd.join("dip.yml")

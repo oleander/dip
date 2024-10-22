@@ -132,7 +132,7 @@ module Dip
     def validate
       Dip::Commands::Validate.new.execute
     rescue Dip::Commands::Validate::UserError => e
-      warn e.message
+      abort e.message
     rescue Dip::Commands::Validate::ValidationError => e
       abort e.message
     else
