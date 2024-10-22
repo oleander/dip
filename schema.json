@@ -157,12 +157,6 @@
               "examples": ["up", "run"],
               "errorMessage": "Error in 'interaction.compose.method': must be a string."
             },
-            "compose_method": {
-              "type": "string",
-              "description": "Alternative way to specify the Docker Compose method",
-              "examples": ["up", "run"],
-              "errorMessage": "Error in 'interaction.compose_method': must be a string."
-            },
             "run_options": {
               "type": "array",
               "items": {
@@ -182,7 +176,7 @@
               "errorMessage": "Error in 'interaction.compose.profiles': must be an array of strings."
             }
           },
-          "errorMessage": "Error in 'interaction.compose': must be an object with properties 'method', 'compose_method', 'run_options', and 'profiles'."
+          "errorMessage": "Error in 'interaction.compose': must be an object with properties 'method', 'run_options', and 'profiles'."
         },
         "shell": {
           "type": "boolean",
@@ -211,6 +205,26 @@
             }
           },
           "errorMessage": "Error in 'interaction.subcommands': must be an object with valid subcommand configurations."
+        },
+        "pod": {
+          "type": "string",
+          "description": "Specifies the Kubernetes pod associated with the command",
+          "errorMessage": "Error in 'interaction.pod': must be a string."
+        },
+        "compose_method": {
+          "type": "string",
+          "description": "Alternative way to specify the Docker Compose method",
+          "examples": ["up", "run"],
+          "errorMessage": "Error in 'interaction.compose_method': must be a string."
+        },
+        "compose_run_options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Alternative way to specify additional options for Docker Compose run",
+          "examples": ["no-deps", "detach"],
+          "errorMessage": "Error in 'interaction.compose_run_options': must be an array of strings."
         }
       },
       "additionalProperties": false,
