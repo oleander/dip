@@ -1,99 +1,37 @@
-version: '8.1.0'
-
-environment:
-  RAILS_ENV: development
-  NODE_ENV: development
-  DATABASE_URL: postgres://user:password@db:5432/myapp_development
-  REDIS_URL: redis://redis:6379/0
+version: '7'
 
 compose:
   files:
     - docker-compose.yml
-    - docker-compose.override.yml
-  command: docker compose
 
 interaction:
-  rails:
-    description: Run Rails commands
-    command: bundle exec rails
-    service: web
-    default_args: server -p 3000 -b 0.0.0.0
-    environment:
-      RAILS_LOG_TO_STDOUT: "true"
-    compose:
-      method: run
-      run_options:
-        - service-ports
-        - rm
-      profiles:
-        - web
-        - development
-    shell: true
-    entrypoint: /docker-entrypoint.sh
-    runner: docker_compose
+  shell:
+    description: Open the Bash shell in app's container
+    service: app
+    command: /bin/bash
 
-  npm:
-    description: Run npm commands
-    service: frontend
-    command: npm
-    compose:
-      method: run
-      profiles:
-        - frontend
+  pry:
+    description: Open Pry console
+    service: app
+    command: ./bin/console
 
-  psql:
-    description: Connect to PostgreSQL database
-    service: db
-    command: psql -h db -U user myapp_development
-    compose:
-      method: run
-    environment:
-      PGPASSWORD: password
+  bundle:
+    description: Run Bundler commands
+    service: app
+    command: bundle
 
   rspec:
-    description: Run RSpec tests
-    service: web
+    description: Run Rspec commands
+    service: app
     command: bundle exec rspec
-    environment:
-      RAILS_ENV: test
-    compose:
-      method: run
-      run_options:
-        - rm
-      profiles:
-        - test
 
-  shell:
-    description: Start a shell in the web container
-    service: web
-    command: /bin/bash
-    compose:
-      method: run
-      run_options:
-        - rm
-
-  k8s:
-    description: Run kubectl commands
-    runner: kubectl
-    command: kubectl
-    entrypoint: kubectl
-    shell: false
+  rubocop:
+    description: Run Rubocop commands
+    service: app
+    command: bundle exec rubocop
 
 provision:
+  - cp -f lefthook-local.dip_example.yml lefthook-local.yml
   - dip compose down --volumes
-  - dip compose build
-  - dip rails db:create
-  - dip rails db:migrate
-  - dip rails db:seed
-  - dip npm install
-
-kubectl:
-  namespace: myapp-development
-
-infra:
-  redis:
-    git: https://github.com/mycompany/redis-config.git
-    ref: main
-  elasticsearch:
-    path: ./infra/elasticsearch
-
+  - rm -rf Gemfile.lock
+  - dip bundle install
