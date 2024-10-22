@@ -156,25 +156,12 @@
               "description": "Specifies the Docker Compose method (e.g., up, run)",
               "examples": ["up", "run"]
             },
-            "compose_method": {
-              "type": "string",
-              "description": "Alternative way to specify the Docker Compose method",
-              "examples": ["up", "run"]
-            },
             "run_options": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "description": "Specifies additional options for Docker Compose run",
-              "examples": ["no-deps", "detach"]
-            },
-            "compose_run_options": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "description": "Alternative way to specify additional options for Docker Compose run",
               "examples": ["no-deps", "detach"]
             },
             "profiles": {
@@ -210,17 +197,12 @@
               "$ref": "#/definitions/interactionCommand"
             }
           }
-        },
-        "pod": {
-          "type": "string",
-          "description": "Specifies the Kubernetes pod associated with the command"
         }
       },
       "additionalProperties": false,
-      "oneOf": [
+      "anyOf": [
         { "required": ["command"] },
-        { "required": ["subcommands"] },
-        { "required": ["command", "subcommands"] }
+        { "required": ["subcommands"] }
       ]
     }
   }

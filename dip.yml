@@ -15,8 +15,8 @@ compose:
 interaction:
   rails:
     description: Run Rails commands
-    service: web
     command: bundle exec rails
+    service: web
     default_args: server -p 3000 -b 0.0.0.0
     environment:
       RAILS_LOG_TO_STDOUT: "true"
@@ -31,19 +31,6 @@ interaction:
     shell: true
     entrypoint: /docker-entrypoint.sh
     runner: docker_compose
-    subcommands:
-      console:
-        description: Start Rails console
-        command: console
-      db:
-        description: Database related commands
-        subcommands:
-          migrate:
-            description: Run database migrations
-            command: db:migrate
-          seed:
-            description: Seed the database
-            command: db:seed
 
   npm:
     description: Run npm commands
@@ -88,6 +75,7 @@ interaction:
   k8s:
     description: Run kubectl commands
     runner: kubectl
+    command: kubectl
     entrypoint: kubectl
     shell: false
 
