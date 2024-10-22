@@ -125,6 +125,12 @@
           "examples": ["app", "db", "web", "redis"],
           "errorMessage": "Error in 'interaction.service': must be a string."
         },
+        "command": {
+          "type": "string",
+          "description": "Represents the command to be executed",
+          "examples": ["/bin/bash", "./bin/console", "bundle", "bundle exec rspec"],
+          "errorMessage": "Error in 'interaction.command': must be a string."
+        },
         "default_args": {
           "type": "string",
           "description": "Specifies default arguments for the command",
@@ -195,43 +201,20 @@
           "description": "Specifies the runner (e.g., docker_compose, kubectl)",
           "examples": ["docker_compose", "kubectl"],
           "errorMessage": "Error in 'interaction.runner': must be a string."
+        },
+        "subcommands": {
+          "type": "object",
+          "description": "Contains subcommands with the same structure as main commands",
+          "patternProperties": {
+            "^[a-zA-Z0-9_]+$": {
+              "$ref": "#/definitions/interactionCommand"
+            }
+          },
+          "errorMessage": "Error in 'interaction.subcommands': must be an object with valid subcommand configurations."
         }
       },
-      "oneOf": [
-        {
-          "required": ["command"],
-          "properties": {
-            "command": {
-              "type": "string",
-              "description": "Represents the command to be executed",
-              "examples": ["/bin/bash", "./bin/console", "bundle", "bundle exec rspec"],
-              "errorMessage": "Error in 'interaction.command': must be a string."
-            }
-          },
-          "not": {
-            "required": ["subcommands"]
-          }
-        },
-        {
-          "required": ["subcommands"],
-          "properties": {
-            "subcommands": {
-              "type": "object",
-              "description": "Contains subcommands with the same structure as main commands",
-              "patternProperties": {
-                "^[a-zA-Z0-9_]+$": {
-                  "$ref": "#/definitions/interactionCommand"
-                }
-              },
-              "errorMessage": "Error in 'interaction.subcommands': must be an object with valid subcommand configurations."
-            }
-          },
-          "not": {
-            "required": ["command"]
-          }
-        }
-      ],
-      "errorMessage": "An interaction command must have either a 'command' or 'subcommands', but not both."
+      "additionalProperties": false,
+      "errorMessage": "An interaction command can have both a 'command' and 'subcommands', along with other properties."
     }
   }
 }
