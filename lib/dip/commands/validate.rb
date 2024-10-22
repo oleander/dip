@@ -8,17 +8,19 @@ require_relative "../command"
 module Dip
   module Commands
     class Validate < Dip::Command
-      def execute
-        root_path = Pathname.new(__dir__).join("..", "..", "..")
+      Error = Class.new(StandardError)
+
+      def execute(output = $stdout)
+        root_path = Pathname.new(__dir__).join("../../..")
         schema_path = root_path.join("schema.json")
         dip_yml_path = root_path.join("dip.yml")
 
         unless schema_path.exist?
-          abort "Error: schema.json not found in the current directory"
+          raise Error, "schema.json not found in the current directory"
         end
 
         unless dip_yml_path.exist?
-          abort "Error: dip.yml not found in the current directory"
+          raise Error, "dip.yml not found in the current directory"
         end
 
         schema = JSON.parse(schema_path.read)
@@ -26,9 +28,9 @@ module Dip
 
         JSON::Validator.validate!(schema, dip_config)
       rescue JSON::Schema::ValidationError => e
-        abort "Validation error: #{e.message}"
+        raise Error, "Invalid dip.yml: #{e.message}"
       else
-        puts "dip.yml is valid according to the schema"
+        output.puts "dip.yml is valid according to the schema"
       end
     end
   end

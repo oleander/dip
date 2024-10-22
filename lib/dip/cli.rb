@@ -23,6 +23,8 @@ module Dip
       def start(argv)
         argv = Dip::RunVars.call(argv, ENV)
 
+        Dip::Commands::Validate.new.execute(StringIO.new)
+
         cmd = argv.first
 
         if cmd && !TOP_LEVEL_COMMANDS.include?(cmd) && Dip.config.exist? && Dip.config.interaction.key?(cmd.to_sym)
@@ -30,6 +32,8 @@ module Dip
         end
 
         super(Dip::RunVars.call(argv, ENV))
+      rescue Dip::Commands::Validate::Error => e
+        abort e.message
       end
     end
 
@@ -135,7 +139,5 @@ module Dip
     require_relative "cli/console"
     desc "console", "Integrate Dip commands into shell (only ZSH and Bash are supported)"
     subcommand :console, Dip::CLI::Console
-
-
   end
 end
