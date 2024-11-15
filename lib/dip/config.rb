@@ -114,22 +114,20 @@ module Dip
     end
 
     def validate_schema
-      data = YAML.load_file(file_path)
+      raise Dip::Error, "Config file path is not set" if file_path.nil?
+      raise Dip::Error, "Config file not found: #{file_path}" unless File.exist?(file_path)
+
       schema_path = File.join(File.dirname(__FILE__), '../../schema.json')
+      raise Dip::Error, "Schema file not found: #{schema_path}" unless File.exist?(schema_path)
+
+      data = YAML.load_file(file_path)
       schema = JSON.parse(File.read(schema_path))
       JSON::Validator.validate!(schema, data)
-    rescue Errno::ENOENT => e
-      if file_path.nil?
-        raise Dip::Error, "Config file path is not set"
-      elsif !File.exist?(schema_path)
-        raise Dip::Error, "Schema file not found: #{schema_path}"
-      else
-        raise Dip::Error, "Config file not found: #{file_path}"
-      end
     rescue Psych::SyntaxError => e
       raise Dip::Error, "Invalid YAML syntax in config file: #{e.message}"
     rescue JSON::Schema::ValidationError => e
-      error_message = "Schema validation failed: #{e.message}\nInput data:\n  #{data.to_yaml.gsub("\n", "\n  ")}"
+      data_display = data ? data.to_yaml.gsub("\n", "\n  ") : "nil"
+      error_message = "Schema validation failed: #{e.message}\nInput data:\n  #{data_display}"
       raise Dip::Error, error_message
     end
 
