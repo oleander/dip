@@ -3,6 +3,7 @@
 require "yaml"
 require "erb"
 require "pathname"
+require "json-schema"
 
 require "dip/version"
 require "dip/ext/hash"
@@ -88,6 +89,7 @@ module Dip
 
     def initialize(work_dir = Dir.pwd)
       @work_dir = work_dir
+      validate_schema
     end
 
     def file_path
@@ -110,6 +112,16 @@ module Dip
       define_method(key) do
         config[key] || (raise config_missing_error(key))
       end
+    end
+
+    def validate_schema
+      schema_path = File.join(File.dirname(__FILE__), '../../schema.json')
+      schema = JSON.parse(File.read(schema_path))
+      data = YAML.load_file(file_path)
+
+      JSON::Validator.validate!(schema, data)
+    rescue JSON::Schema::ValidationError => e
+      raise Dip::Error, "Schema validation failed: #{e.message}"
     end
 
     private

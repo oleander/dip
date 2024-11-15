@@ -97,4 +97,20 @@ describe Dip::Config do
       )
     end
   end
+
+  describe "#validate_schema" do
+    context "when schema is valid" do
+      it "does not raise an error" do
+        expect { subject.validate_schema }.not_to raise_error
+      end
+    end
+
+    context "when schema is invalid", :env do
+      let(:env) { {"DIP_FILE" => fixture_path("invalid", "dip.yml")} }
+
+      it "raises a Dip::Error" do
+        expect { subject.validate_schema }.to raise_error(Dip::Error, /Schema validation failed/)
+      end
+    end
+  end
 end
