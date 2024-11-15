@@ -121,7 +121,15 @@ module Dip
 
       JSON::Validator.validate!(schema, data)
     rescue JSON::Schema::ValidationError => e
-      raise Dip::Error, "Schema validation failed: #{e.message}"
+      relative_path = Pathname.new(file_path).relative_path_from(Pathname.new(Dir.pwd))
+      error_message = <<~ERROR
+        Schema validation failed: #{e.message}
+
+        File: #{relative_path}
+        Input data:
+        #{YAML.dump(data).gsub(/^/, '  ')}  # Indent the YAML output by 2 spaces
+      ERROR
+      raise Dip::Error, error_message
     end
 
     private

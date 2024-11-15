@@ -200,5 +200,5 @@
       }
     }
   },
-  "required": ["version", "compose", "interaction"]
+  "required": ["version", "interaction"]
 }
