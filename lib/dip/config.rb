@@ -146,12 +146,10 @@ module Dip
 
       config = self.class.load_yaml(finder.file_path)
 
-      validate_schema
-
       unless Gem::Version.new(Dip::VERSION) >= Gem::Version.new(config.fetch(:version))
         raise VersionMismatchError, "Your dip version is `#{Dip::VERSION}`, " \
-                                    "but config requires minimum version `#{config[:version]}`. " \
-                                    "Please upgrade your dip!"
+                                   "but config requires minimum version `#{config[:version]}`. " \
+                                   "Please upgrade your dip!"
       end
 
       base_config = {}
@@ -176,6 +174,10 @@ module Dip
       base_config.deep_merge!(self.class.load_yaml(override_finder.file_path)) if override_finder.exist?
 
       @config = CONFIG_DEFAULTS.merge(base_config)
+
+      validate_schema
+
+      @config
     end
 
     def config_missing_error(config_key)
