@@ -24,16 +24,6 @@ module Dip
 
         cmd = argv.first
 
-        unless cmd.downcase.start_with?("validate")
-          begin
-            Dip::Commands::Validate.new.execute(StringIO.new)
-          rescue Dip::Commands::Validate::UserError => e
-            # NOP
-          rescue Dip::Commands::Validate::ValidationError => e
-            abort e.message
-          end
-        end
-
         if cmd && !TOP_LEVEL_COMMANDS.include?(cmd) && Dip.config.exist? && Dip.config.interaction.key?(cmd.to_sym)
           argv.unshift("run")
         end
@@ -125,18 +115,6 @@ module Dip
         require_relative "commands/provision"
         Dip::Commands::Provision.new.execute
       end
-    end
-
-    require_relative "commands/validate"
-    desc "validate", "Validate dip.yml"
-    def validate
-      Dip::Commands::Validate.new.execute
-    rescue Dip::Commands::Validate::UserError => e
-      $stderr.puts e.message
-    rescue Dip::Commands::Validate::ValidationError => e
-      $stderr.puts e.message
-    else
-      puts "dip.yml is valid according to the schema"
     end
 
     desc "validate", "Validate the dip.yml file against the schema"
