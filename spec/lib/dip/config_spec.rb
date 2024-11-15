@@ -98,10 +98,10 @@ describe Dip::Config do
     end
   end
 
-  describe "#validate_schema" do
+  describe "#validate" do
     context "when schema is valid" do
       it "does not raise an error" do
-        expect { subject.validate_schema }.not_to raise_error
+        expect { subject.validate }.not_to raise_error
       end
     end
 
@@ -109,7 +109,7 @@ describe Dip::Config do
       let(:env) { {"DIP_FILE" => fixture_path("invalid-with-schema/dip.yml")} }
 
       it "raises a Dip::Error" do
-        expect { subject.validate_schema }.to raise_error(Dip::Error, /Schema validation failed/)
+        expect { subject.validate }.to raise_error(Dip::Error, /Schema validation failed/)
       end
     end
 
@@ -117,7 +117,7 @@ describe Dip::Config do
       let(:env) { {"DIP_FILE" => "no.yml"} }
 
       it "raises a Dip::Error" do
-        expect { subject.validate_schema }.to raise_error(Dip::Error, /Config file not found/)
+        expect { subject.validate }.to raise_error(Dip::Error, /Config file not found/)
       end
     end
 
@@ -125,7 +125,7 @@ describe Dip::Config do
       let(:env) { {"DIP_FILE" => fixture_path("no-schema", "dip.yml")} }
 
       it "does not raise an error" do
-        expect { subject.validate_schema }.not_to raise_error
+        expect { subject.validate }.not_to raise_error
       end
     end
   end

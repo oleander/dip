@@ -119,8 +119,8 @@ module Dip
 
     desc "validate", "Validate the dip.yml file against the schema"
     def validate
-      Dip.config.validate_schema
-      puts "dip.yml is valid."
+      Dip.config.validate
+      puts "dip.yml is valid"
     rescue Dip::Error => e
       warn "Validation failed: #{e.message}"
       exit 1

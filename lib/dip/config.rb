@@ -113,7 +113,7 @@ module Dip
       end
     end
 
-    def validate_schema
+    def validate
       raise Dip::Error, "Config file path is not set" if file_path.nil?
       raise Dip::Error, "Config file not found: #{file_path}" unless File.exist?(file_path)
 
@@ -175,7 +175,7 @@ module Dip
 
       @config = CONFIG_DEFAULTS.merge(base_config)
 
-      validate_schema
+      validate
 
       @config
     end
