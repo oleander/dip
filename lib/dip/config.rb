@@ -119,7 +119,11 @@ module Dip
       schema = JSON.parse(File.read(schema_path))
       JSON::Validator.validate!(schema, data)
     rescue Errno::ENOENT => e
-      raise Dip::Error, "Config file not found: #{file_path}"
+      if !File.exist?(schema_path)
+        raise Dip::Error, "Schema file not found: #{schema_path}"
+      else
+        raise Dip::Error, "Config file not found: #{file_path}"
+      end
     rescue Psych::SyntaxError => e
       raise Dip::Error, "Invalid YAML syntax in config file: #{e.message}"
     rescue JSON::Schema::ValidationError => e
