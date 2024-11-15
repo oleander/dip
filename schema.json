@@ -5,6 +5,8 @@
   "properties": {
     "$schema": {
       "type": "string",
+      "format": "uri",
+      "pattern": "^(https?://|\\./|/)",
       "description": "The URI of the JSON Schema to validate against"
     },
     "version": {
@@ -63,8 +65,17 @@
       "type": "object",
       "description": "Defines environment variables for the configuration",
       "patternProperties": {
-        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
-          "type": "string"
+        "^[A-Z][A-Z0-9_]*$": {
+          "type": "string",
+          "anyOf": [
+            { "format": "uri" },
+            { "type": "string" }
+          ],
+          "examples": [
+            "postgres://user:password@db:5432/dbname",
+            "redis://redis:6379/0",
+            "https://api.example.com"
+          ]
         }
       }
     },
@@ -96,8 +107,13 @@
             "git": {
               "type": "string",
               "format": "uri",
+              "pattern": "^(git@|git://|https://)",
               "description": "Git repository URL for infrastructure component",
-              "examples": ["https://github.com/mycompany/redis-config.git"]
+              "examples": [
+                "https://github.com/mycompany/redis-config.git",
+                "git@github.com:mycompany/redis-config.git",
+                "git://github.com/mycompany/redis-config.git"
+              ]
             },
             "ref": {
               "type": "string",
