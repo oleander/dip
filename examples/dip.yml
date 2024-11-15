@@ -18,7 +18,6 @@ compose:
   command: docker compose
 
 interaction:
-  # Web application commands
   rails:
     description: Run Rails commands
     service: web
@@ -55,7 +54,6 @@ interaction:
             description: Seed the database
             command: db:seed
 
-  # Frontend commands
   npm:
     description: Run npm commands
     service: frontend
@@ -65,7 +63,6 @@ interaction:
       profiles:
         - frontend
 
-  # Database commands
   psql:
     description: Connect to PostgreSQL database
     service: db
@@ -75,7 +72,6 @@ interaction:
     environment:
       PGPASSWORD: password
 
-  # Test commands
   rspec:
     description: Run RSpec tests
     service: web
@@ -89,7 +85,6 @@ interaction:
       profiles:
         - test
 
-  # Utility commands
   shell:
     description: Start a shell in the web container
     service: web
@@ -99,7 +94,6 @@ interaction:
       run_options:
         - rm
 
-  # Kubernetes commands
   k8s:
     description: Run kubectl commands
     command: kubectl
@@ -107,7 +101,6 @@ interaction:
     entrypoint: kubectl
     shell: false
 
-  # New examples
   brakeman:
     description: Check brakeman sast
     command: docker run another-image ...
