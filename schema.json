@@ -5,8 +5,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "format": "uri",
-      "pattern": "^(https?://|\\./|/)",
+      "pattern": "^(https?://[^\\s/$.?#].[^\\s]*|\\./|/).+$",
       "description": "The URI of the JSON Schema to validate against"
     },
     "version": {
