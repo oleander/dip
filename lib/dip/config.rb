@@ -119,7 +119,9 @@ module Dip
       schema = JSON.parse(File.read(schema_path))
       JSON::Validator.validate!(schema, data)
     rescue Errno::ENOENT => e
-      if !File.exist?(schema_path)
+      if file_path.nil?
+        raise Dip::Error, "Config file path is not set"
+      elsif !File.exist?(schema_path)
         raise Dip::Error, "Schema file not found: #{schema_path}"
       else
         raise Dip::Error, "Config file not found: #{file_path}"
