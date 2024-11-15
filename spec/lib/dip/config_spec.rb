@@ -122,14 +122,10 @@ describe Dip::Config do
     end
 
     context "when schema file is not found", :env do
-      let(:env) { {"DIP_FILE" => fixture_path("invalid-with-schema/dip.yml")} }
+      let(:env) { {"DIP_FILE" => fixture_path("no-schema", "dip.yml")} }
 
-      before do
-        allow(File).to receive(:exist?).with(anything).and_return(false)
-      end
-
-      it "raises a Dip::Error" do
-        expect { subject.validate_schema }.to raise_error(Dip::Error, /Config file not found/)
+      it "does not raise an error" do
+        expect { subject.validate_schema }.not_to raise_error
       end
     end
   end
