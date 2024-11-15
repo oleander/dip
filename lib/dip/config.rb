@@ -115,6 +115,9 @@ module Dip
 
     def validate_schema
       data = YAML.load_file(file_path)
+      schema_path = File.join(File.dirname(__FILE__), '../../schema.json')
+      schema = JSON.parse(File.read(schema_path))
+      JSON::Validator.validate!(schema, data)
     rescue Errno::ENOENT => e
       raise Dip::Error, "Config file not found: #{file_path}"
     rescue Psych::SyntaxError => e
