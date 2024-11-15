@@ -134,7 +134,6 @@
           "$ref": "#/definitions/interaction_command"
         }
       },
-      "minProperties": 1,
       "additionalProperties": false
     },
     "provision": {

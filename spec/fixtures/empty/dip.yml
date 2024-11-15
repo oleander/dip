@@ -1,6 +1,5 @@
 version: '2'
-
-interaction:
-  shell:
-    service: app
-    command: /bin/bash
+environment: {}
+compose: {}
+provision: []
+interaction: {}
