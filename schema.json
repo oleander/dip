@@ -65,18 +65,10 @@
       "description": "Defines environment variables for the configuration",
       "patternProperties": {
         "^[A-Z][A-Z0-9_]*$": {
-          "type": "string",
-          "anyOf": [
-            { "format": "uri" },
-            { "type": "string" }
-          ],
-          "examples": [
-            "postgres://user:password@db:5432/dbname",
-            "redis://redis:6379/0",
-            "https://api.example.com"
-          ]
+          "type": "string"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "kubectl": {
       "type": "object",
