@@ -117,7 +117,7 @@ module Dip
       raise Dip::Error, "Config file path is not set" if file_path.nil?
       raise Dip::Error, "Config file not found: #{file_path}" unless File.exist?(file_path)
 
-      schema_path = File.join(File.dirname(__FILE__), '../../schema.json')
+      schema_path = File.join(File.dirname(__FILE__), "../../schema.json")
       raise Dip::Error, "Schema file not found: #{schema_path}" unless File.exist?(schema_path)
 
       data = YAML.load_file(file_path)
