@@ -81,9 +81,10 @@
     "modules": {
       "type": "array",
       "items": {
-        "type": "string"
-      },
-      "description": "Array of strings representing the names of module files to be included"
+        "type": "string",
+        "description": "Path to module configuration file",
+        "examples": ["dip.production.yml", "dip.staging.yml", "dip.local.yml"]
+      }
     },
     "infra": {
       "type": "object",
@@ -94,7 +95,9 @@
           "properties": {
             "git": {
               "type": "string",
-              "description": "Specifies the Git repository URL for the service"
+              "format": "uri",
+              "description": "Git repository URL for infrastructure component",
+              "examples": ["https://github.com/mycompany/redis-config.git"]
             },
             "ref": {
               "type": "string",
@@ -102,7 +105,8 @@
             },
             "path": {
               "type": "string",
-              "description": "Specifies the local path to the service"
+              "description": "Local path to infrastructure component",
+              "examples": ["./infra/elasticsearch"]
             }
           },
           "oneOf": [
@@ -135,15 +139,14 @@
         },
         "default_args": {
           "type": "string",
-          "description": "Specifies default arguments for the command",
-          "examples": ["db_dev"]
+          "description": "Default arguments for the command",
+          "examples": ["server -p 3000 -b 0.0.0.0"]
         },
         "environment": {
-          "type": "object",
-          "description": "Sets environment variables for the command",
           "patternProperties": {
-            "^[a-zA-Z_][a-zA-Z0-9_]*$": {
-              "type": "string"
+            "^[A-Z][A-Z0-9_]*$": {
+              "type": "string",
+              "examples": ["true", "development", "test"]
             }
           }
         },
@@ -159,18 +162,16 @@
             "run_options": {
               "type": "array",
               "items": {
-                "type": "string"
-              },
-              "description": "Specifies additional options for Docker Compose run",
-              "examples": ["no-deps", "detach"]
+                "type": "string",
+                "examples": ["service-ports", "rm"]
+              }
             },
             "profiles": {
               "type": "array",
               "items": {
-                "type": "string"
-              },
-              "description": "Specifies Docker Compose profiles to use",
-              "examples": ["web", "workers"]
+                "type": "string",
+                "examples": ["web", "development", "test", "frontend"]
+              }
             }
           }
         },
