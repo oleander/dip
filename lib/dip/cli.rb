@@ -122,7 +122,8 @@ module Dip
       Dip.config.validate_schema
       puts "dip.yml is valid."
     rescue Dip::Error => e
-      puts "Validation failed: #{e.message}"
+      warn "Validation failed: #{e.message}"
+      exit 1
     end
 
     require_relative "cli/ssh"
