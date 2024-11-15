@@ -122,10 +122,8 @@ provision:
 kubectl:
   namespace: myapp-development
 
-modules:
-  - dip.production.yml
-  - dip.staging.yml
-  - dip.local.yml
+# modules:
+#   - production
 
 infra:
   redis:
