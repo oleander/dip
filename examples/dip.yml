@@ -122,8 +122,8 @@ provision:
 kubectl:
   namespace: myapp-development
 
-# modules:
-#   - production
+modules:
+  - production
 
 infra:
   redis:
