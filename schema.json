@@ -144,12 +144,15 @@
           "examples": ["server -p 3000 -b 0.0.0.0"]
         },
         "environment": {
+          "type": "object",
+          "description": "Defines environment variables for the command",
           "patternProperties": {
             "^[A-Z][A-Z0-9_]*$": {
               "type": "string",
               "examples": ["true", "development", "test"]
             }
-          }
+          },
+          "additionalProperties": false
         },
         "compose": {
           "type": "object",
