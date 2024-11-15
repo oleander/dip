@@ -89,7 +89,6 @@ module Dip
 
     def initialize(work_dir = Dir.pwd)
       @work_dir = work_dir
-      validate_schema if exist?
     end
 
     def file_path
@@ -116,9 +115,10 @@ module Dip
 
     def validate_schema
       data = YAML.load_file(file_path)
-      schema_path = File.join(File.dirname(__FILE__), '../../schema.json')
-      schema = JSON.parse(File.read(schema_path))
-      JSON::Validator.validate!(schema, data)
+    rescue Errno::ENOENT => e
+      raise Dip::Error, "Config file not found: #{file_path}"
+    rescue Psych::SyntaxError => e
+      raise Dip::Error, "Invalid YAML syntax in config file: #{e.message}"
     rescue JSON::Schema::ValidationError => e
       error_message = "Schema validation failed: #{e.message}\nInput data:\n  #{data.to_yaml.gsub("\n", "\n  ")}"
       raise Dip::Error, error_message
@@ -138,6 +138,8 @@ module Dip
       raise Dip::Error, "Could not find dip.yml config" unless finder.exist?
 
       config = self.class.load_yaml(finder.file_path)
+
+      validate_schema
 
       unless Gem::Version.new(Dip::VERSION) >= Gem::Version.new(config.fetch(:version))
         raise VersionMismatchError, "Your dip version is `#{Dip::VERSION}`, " \
