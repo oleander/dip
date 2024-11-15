@@ -10,6 +10,11 @@
       "description": "Defines environment variables",
       "additionalProperties": {
         "type": "string"
+      },
+      "examples": {
+        "RAILS_ENV": "development",
+        "DATABASE_URL": "postgres://user:password@db:5432/myapp_development",
+        "PORT": "${PORT:-3000}"
       }
     },
     "interaction_command": {
@@ -19,19 +24,23 @@
       "properties": {
         "description": {
           "type": "string",
-          "description": "Describes the command"
+          "description": "Describes the command",
+          "examples": ["Run Rails commands", "Connect to PostgreSQL database"]
         },
         "service": {
           "type": "string",
-          "description": "Specifies the service associated with the command"
+          "description": "Specifies the service associated with the command",
+          "examples": ["web", "frontend", "db"]
         },
         "command": {
           "type": "string",
-          "description": "Represents the command to be executed"
+          "description": "Represents the command to be executed",
+          "examples": ["bundle exec rails", "npm", "psql -h db -U user myapp_development"]
         },
         "default_args": {
           "type": "string",
-          "description": "Default arguments for the command"
+          "description": "Default arguments for the command",
+          "examples": ["server -p 3000 -b 0.0.0.0"]
         },
         "environment": {
           "$ref": "#/definitions/environment_vars"
@@ -43,25 +52,29 @@
           "properties": {
             "method": {
               "type": "string",
-              "description": "Specifies the Docker Compose method (e.g., up, run)"
+              "description": "Specifies the Docker Compose method (e.g., up, run)",
+              "examples": ["run", "up"]
             },
             "compose_method": {
               "type": "string",
-              "description": "Specifies an alternative Docker Compose method to use in compose commands"
+              "description": "Specifies an alternative Docker Compose method to use in compose commands",
+              "examples": ["up"]
             },
             "run_options": {
               "type": "array",
               "items": {
                 "type": "string"
               },
-              "description": "Options to pass to the 'docker-compose run' command"
+              "description": "Options to pass to the 'docker-compose run' command",
+              "examples": [["service-ports", "rm"]]
             },
             "profiles": {
               "type": "array",
               "items": {
                 "type": "string"
               },
-              "description": "Docker Compose profiles to use"
+              "description": "Docker Compose profiles to use",
+              "examples": [["web", "development"], ["frontend"], ["test"]]
             }
           }
         },
@@ -99,7 +112,8 @@
     },
     "version": {
       "type": "string",
-      "description": "Specifies the minimum required version of Dip"
+      "description": "Specifies the minimum required version of Dip",
+      "examples": ["8.1.0"]
     },
     "compose": {
       "type": "object",
@@ -110,15 +124,18 @@
           "items": {
             "type": "string"
           },
-          "description": "Array of strings representing paths to Docker Compose files"
+          "description": "Array of strings representing paths to Docker Compose files",
+          "examples": [["docker-compose.yml", "docker-compose.override.yml"]]
         },
         "project_name": {
           "type": "string",
-          "description": "Specifies the project name for Docker Compose"
+          "description": "Specifies the project name for Docker Compose",
+          "examples": ["app"]
         },
         "command": {
           "type": "string",
-          "description": "Specifies an alternative Docker Compose command"
+          "description": "Specifies an alternative Docker Compose command",
+          "examples": ["docker compose"]
         },
         "method": {
           "type": "string",
@@ -141,7 +158,15 @@
       "items": {
         "type": "string"
       },
-      "description": "Lists the commands to be executed for provisioning"
+      "description": "Lists the commands to be executed for provisioning",
+      "examples": [
+        [
+          "dip compose down --volumes",
+          "dip compose build",
+          "dip rails db:migrate",
+          "dip npm install"
+        ]
+      ]
     },
     "environment": {
       "$ref": "#/definitions/environment_vars"
@@ -153,7 +178,8 @@
       "properties": {
         "namespace": {
           "type": "string",
-          "description": "Specifies the Kubernetes namespace to use"
+          "description": "Specifies the Kubernetes namespace to use",
+          "examples": ["app"]
         }
       }
     },
@@ -162,7 +188,8 @@
       "items": {
         "type": "string"
       },
-      "description": "Paths to module configuration files"
+      "description": "Paths to module configuration files",
+      "examples": [["production"]]
     },
     "infra": {
       "type": "object",
@@ -176,15 +203,18 @@
             "git": {
               "type": "string",
               "pattern": "^(git@|git://|https?://)[\\w\\d\\.@:\\-/]+$",
-              "description": "Git repository URL for the infrastructure component"
+              "description": "Git repository URL for the infrastructure component",
+              "examples": ["https://github.com/mycompany/redis-config.git"]
             },
             "ref": {
               "type": "string",
-              "description": "Specifies the Git reference (branch, tag, or commit) to use"
+              "description": "Specifies the Git reference (branch, tag, or commit) to use",
+              "examples": ["main"]
             },
             "path": {
               "type": "string",
-              "description": "Local path to the infrastructure component"
+              "description": "Local path to the infrastructure component",
+              "examples": ["./infra/elasticsearch"]
             }
           },
           "oneOf": [
