@@ -1,17 +1,21 @@
 {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Dip Configuration Schema",
   "description": "Schema for the dip.yml configuration file",
   "type": "object",
+  "additionalProperties": false,
   "definitions": {
-    "environmentVars": {
+    "environment_vars": {
       "type": "object",
       "description": "Defines environment variables",
       "additionalProperties": {
         "type": "string"
       }
     },
-    "interactionCommand": {
+    "interaction_command": {
       "type": "object",
+      "description": "Configuration for an interaction command",
+      "additionalProperties": false,
       "properties": {
         "description": {
           "type": "string",
@@ -30,27 +34,34 @@
           "description": "Default arguments for the command"
         },
         "environment": {
-          "$ref": "#/definitions/environmentVars"
+          "$ref": "#/definitions/environment_vars"
         },
         "compose": {
           "type": "object",
           "description": "Allows specifying Docker Compose options",
+          "additionalProperties": false,
           "properties": {
             "method": {
               "type": "string",
               "description": "Specifies the Docker Compose method (e.g., up, run)"
             },
+            "compose_method": {
+              "type": "string",
+              "description": "Specifies an alternative Docker Compose method to use in compose commands"
+            },
             "run_options": {
               "type": "array",
               "items": {
                 "type": "string"
-              }
+              },
+              "description": "Options to pass to the 'docker-compose run' command"
             },
             "profiles": {
               "type": "array",
               "items": {
                 "type": "string"
-              }
+              },
+              "description": "Docker Compose profiles to use"
             }
           }
         },
@@ -71,12 +82,13 @@
           "description": "Contains subcommands with the same structure as main commands",
           "patternProperties": {
             "^[a-zA-Z0-9_]+$": {
-              "$ref": "#/definitions/interactionCommand"
+              "$ref": "#/definitions/interaction_command"
             }
-          }
+          },
+          "minProperties": 1,
+          "additionalProperties": false
         }
       },
-      "additionalProperties": false,
       "anyOf": [
         { "required": ["command"] },
         { "required": ["subcommands"] }
@@ -96,6 +108,7 @@
     "compose": {
       "type": "object",
       "description": "Contains Docker Compose configuration",
+      "additionalProperties": false,
       "properties": {
         "files": {
           "type": "array",
@@ -112,7 +125,7 @@
           "type": "string",
           "description": "Specifies an alternative Docker Compose command"
         },
-        "compose_method": {
+        "method": {
           "type": "string",
           "description": "Specifies the Docker Compose method to use"
         }
@@ -124,10 +137,11 @@
       "description": "Defines the commands and their configurations",
       "patternProperties": {
         "^[a-zA-Z0-9_]+$": {
-          "$ref": "#/definitions/interactionCommand"
+          "$ref": "#/definitions/interaction_command"
         }
       },
-      "minProperties": 1
+      "minProperties": 1,
+      "additionalProperties": false
     },
     "provision": {
       "type": "array",
@@ -137,11 +151,12 @@
       "description": "Lists the commands to be executed for provisioning"
     },
     "environment": {
-      "$ref": "#/definitions/environmentVars"
+      "$ref": "#/definitions/environment_vars"
     },
     "kubectl": {
       "type": "object",
       "description": "Contains Kubernetes configuration",
+      "additionalProperties": false,
       "properties": {
         "namespace": {
           "type": "string",
@@ -152,21 +167,23 @@
     "modules": {
       "type": "array",
       "items": {
-        "type": "string",
-        "description": "Path to module configuration file"
-      }
+        "type": "string"
+      },
+      "description": "Paths to module configuration files"
     },
     "infra": {
       "type": "object",
       "description": "Contains infrastructure services configuration",
+      "additionalProperties": false,
       "patternProperties": {
         "^[a-zA-Z0-9_]+$": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "git": {
               "type": "string",
               "pattern": "^(git@|git://|https?://)[\\w\\d\\.@:\\-/]+$",
-              "description": "Git repository URL for infrastructure component"
+              "description": "Git repository URL for the infrastructure component"
             },
             "ref": {
               "type": "string",
@@ -174,7 +191,7 @@
             },
             "path": {
               "type": "string",
-              "description": "Local path to infrastructure component"
+              "description": "Local path to the infrastructure component"
             }
           },
           "oneOf": [
@@ -185,6 +202,5 @@
       }
     }
   },
-  "required": ["version", "compose", "interaction"],
-  "additionalProperties": false
+  "required": ["version", "compose", "interaction"]
 }
