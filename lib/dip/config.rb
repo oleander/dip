@@ -115,20 +115,14 @@ module Dip
     end
 
     def validate_schema
+      data = YAML.load_file(file_path)
       schema_path = File.join(File.dirname(__FILE__), '../../schema.json')
       schema = JSON.parse(File.read(schema_path))
-      data = YAML.load_file(file_path)
-
       JSON::Validator.validate!(schema, data)
+    rescue Errno::ENOENT
+      raise Dip::Error, "Configuration file not found: #{file_path}"
     rescue JSON::Schema::ValidationError => e
-      relative_path = Pathname.new(file_path).relative_path_from(Pathname.new(Dir.pwd))
-      error_message = <<~ERROR
-        Schema validation failed: #{e.message}
-
-        File: #{relative_path}
-        Input data:
-        #{YAML.dump(data).gsub(/^/, '  ')}  # Indent the YAML output by 2 spaces
-      ERROR
+      error_message = "Schema validation failed: #{e.message}\nInput data:\n  #{data.to_yaml.gsub("\n", "\n  ")}"
       raise Dip::Error, error_message
     end
 
