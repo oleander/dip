@@ -88,11 +88,7 @@
           "minProperties": 1,
           "additionalProperties": false
         }
-      },
-      "anyOf": [
-        { "required": ["command"] },
-        { "required": ["subcommands"] }
-      ]
+      }
     }
   },
   "properties": {
