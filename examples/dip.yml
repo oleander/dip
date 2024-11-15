@@ -7,6 +7,8 @@ environment:
   NODE_ENV: development
   DATABASE_URL: postgres://user:password@db:5432/myapp_development
   REDIS_URL: redis://redis:6379/0
+  PORT: ${PORT:-3000}
+  APP_PORT: ${PORT:-3000}
 
 compose:
   files:
@@ -127,9 +129,10 @@ provision:
 kubectl:
   namespace: myapp-development
 
-# modules:
-#   - dip.production.yml
-#   - dip.staging.yml
+modules:
+  - dip.production.yml
+  - dip.staging.yml
+  - dip.local.yml
 
 infra:
   redis:
