@@ -97,14 +97,8 @@
           "properties": {
             "git": {
               "type": "string",
-              "format": "uri",
-              "pattern": "^(git@|git://|https://)",
-              "description": "Git repository URL for infrastructure component",
-              "examples": [
-                "https://github.com/mycompany/redis-config.git",
-                "git@github.com:mycompany/redis-config.git",
-                "git://github.com/mycompany/redis-config.git"
-              ]
+              "pattern": "^(git@|git://|https?://)[\\w\\d\\.@:\\-/]+$",
+              "description": "Git repository URL for infrastructure component"
             },
             "ref": {
               "type": "string",
