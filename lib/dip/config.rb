@@ -89,7 +89,7 @@ module Dip
 
     def initialize(work_dir = Dir.pwd)
       @work_dir = work_dir
-      validate_schema
+      validate_schema if exist?
     end
 
     def file_path
@@ -119,8 +119,6 @@ module Dip
       schema_path = File.join(File.dirname(__FILE__), '../../schema.json')
       schema = JSON.parse(File.read(schema_path))
       JSON::Validator.validate!(schema, data)
-    rescue Errno::ENOENT
-      raise Dip::Error, "Configuration file not found: #{file_path}"
     rescue JSON::Schema::ValidationError => e
       error_message = "Schema validation failed: #{e.message}\nInput data:\n  #{data.to_yaml.gsub("\n", "\n  ")}"
       raise Dip::Error, error_message
