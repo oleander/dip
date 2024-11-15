@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "http://json-schema.org/draft-06/schema#",
   "title": "Dip Configuration Schema",
   "description": "Schema for the dip.yml configuration file",
   "type": "object",
@@ -108,7 +108,6 @@
     "compose": {
       "type": "object",
       "description": "Contains Docker Compose configuration",
-      "additionalProperties": false,
       "properties": {
         "files": {
           "type": "array",
@@ -129,8 +128,7 @@
           "type": "string",
           "description": "Specifies the Docker Compose method to use"
         }
-      },
-      "required": ["files"]
+      }
     },
     "interaction": {
       "type": "object",
