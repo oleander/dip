@@ -7,6 +7,8 @@ environment:
   REDIS_URL: redis://redis:6379/0
   PORT: ${PORT:-3000}
   APP_PORT: ${PORT:-3000}
+  ENABLE_WEB_CONSOLE: true
+  WORKER_CONCURRENCY: 4
 
 compose:
   files:
@@ -16,6 +18,20 @@ compose:
   command: docker compose
 
 interaction:
+  rspec:
+    description: Run Rspec commands
+    service: ruby
+    command: bundle exec rspec
+    subcommands:
+      all:
+        command: bundle exec appraisal rspec
+      rails-6.0:
+        command: bundle exec appraisal rails-6.0 rspec
+      rails-6.1:
+        command: bundle exec appraisal rails-6.1 rspec
+      rails-7.0:
+        command: bundle exec appraisal rails-7.0 rspec
+
   rails:
     description: Run Rails commands
     service: web
@@ -35,6 +51,10 @@ interaction:
     shell: true
     entrypoint: /docker-entrypoint.sh
     runner: docker_compose
+    pod: web
+    compose_run_options:
+      - service-ports
+      - rm
     subcommands:
       console:
         description: Start Rails console
