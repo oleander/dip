@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bibendi/dip/refs/heads/master/schema.json
+
 version: '8.1.0'
 
 environment:
@@ -18,20 +20,6 @@ compose:
   command: docker compose
 
 interaction:
-  rspec:
-    description: Run Rspec commands
-    service: ruby
-    command: bundle exec rspec
-    subcommands:
-      all:
-        command: bundle exec appraisal rspec
-      rails-6.0:
-        command: bundle exec appraisal rails-6.0 rspec
-      rails-6.1:
-        command: bundle exec appraisal rails-6.1 rspec
-      rails-7.0:
-        command: bundle exec appraisal rails-7.0 rspec
-
   rails:
     description: Run Rails commands
     service: web
@@ -102,6 +90,15 @@ interaction:
         - rm
       profiles:
         - test
+    subcommands:
+      all:
+        command: bundle exec appraisal rspec
+      rails-6.0:
+        command: bundle exec appraisal rails-6.0 rspec
+      rails-6.1:
+        command: bundle exec appraisal rails-6.1 rspec
+      rails-7.0:
+        command: bundle exec appraisal rails-7.0 rspec
 
   shell:
     description: Start a shell in the web container
