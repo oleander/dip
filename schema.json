@@ -8,6 +8,7 @@
     "environment_vars": {
       "type": "object",
       "description": "Defines environment variables",
+      "allowUnionTypes": true,
       "additionalProperties": {
         "type": ["string", "boolean", "number"]
       },
