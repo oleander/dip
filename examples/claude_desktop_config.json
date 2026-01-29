@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "dip": {
+      "command": "dip-mcp-server",
+      "args": [],
+      "env": {
+        "DIP_FILE": "/path/to/your/project/dip.yml"
+      }
+    }
+  }
+}

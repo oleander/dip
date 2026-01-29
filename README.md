@@ -472,6 +472,71 @@ services:
     user: "1000:1000"
 ```
 
+### dip-mcp-server
+
+Dip provides a Model Context Protocol (MCP) server that exposes all your dip.yml commands as MCP tools. This enables AI assistants and other MCP clients to interact with your Docker environment through a standardized protocol.
+
+#### What is MCP?
+
+The [Model Context Protocol](https://modelcontextprotocol.io) is an open standard that allows AI assistants to securely connect to external tools and data sources. By running the dip MCP server, you can let AI assistants execute your dip commands directly.
+
+#### Starting the MCP Server
+
+```sh
+dip-mcp-server
+```
+
+The server uses stdio transport, communicating via standard input/output using JSON-RPC messages. Each command defined in your `dip.yml` interaction section becomes an available MCP tool.
+
+#### Configuring with Claude Desktop
+
+To use the dip MCP server with Claude Desktop, add the following to your Claude configuration file:
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "dip": {
+      "command": "dip-mcp-server",
+      "args": [],
+      "env": {
+        "DIP_FILE": "/path/to/your/project/dip.yml"
+      }
+    }
+  }
+}
+```
+
+Replace `/path/to/your/project/dip.yml` with the absolute path to your dip configuration file.
+
+#### Available Tools
+
+The MCP server automatically creates a tool for each command in your `dip.yml` interaction section. For example, if your dip.yml has:
+
+```yml
+interaction:
+  rails:
+    description: Run Rails commands
+    service: app
+    command: bundle exec rails
+  
+  rspec:
+    description: Run Rspec commands
+    service: app
+    command: bundle exec rspec
+```
+
+The MCP server will expose `rails` and `rspec` as tools that AI assistants can call. Each tool accepts:
+- `args` (string): Additional command-line arguments
+- `env` (object): Environment variables to set
+
+#### Requirements
+
+- Ruby >= 2.7
+- The `mcp` gem (automatically installed with dip)
+
 ## Changelog
 
 https://github.com/bibendi/dip/releases
