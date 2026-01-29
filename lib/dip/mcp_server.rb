@@ -16,7 +16,7 @@ module Dip
     def initialize
       # Get all interaction commands from dip.yml
       tools = []
-      
+
       if Dip.config.exist?
         interaction_tree = InteractionTree.new(Dip.config.interaction)
         commands = interaction_tree.list
@@ -52,7 +52,7 @@ module Dip
         # Set the tool name using the class-level method
         tool_name @command_name.gsub(" ", "_")
         description(@command_config[:description] || "Run #{@command_name} command")
-        
+
         input_schema(
           properties: {
             args: {
@@ -71,12 +71,12 @@ module Dip
 
           def call(args: "", env: {}, server_context: {})
             require_relative "commands/run"
-            
+
             # Parse the command and arguments
             cmd_parts = @command_name.split
             cmd = cmd_parts.first
-            subcmd_args = cmd_parts[1..-1] || []
-            
+            subcmd_args = cmd_parts[1..] || []
+
             # Combine with provided args
             all_args = subcmd_args.dup
             all_args += args.shellsplit if args && !args.empty?
@@ -87,7 +87,7 @@ module Dip
             # Execute the command and capture output
             begin
               run_command = Dip::Commands::Run.new(cmd, *all_args)
-              
+
               # Capture output
               output = capture_output do
                 run_command.execute
@@ -115,20 +115,20 @@ module Dip
           def capture_output
             original_stdout = $stdout
             original_stderr = $stderr
-            
+
             $stdout = StringIO.new
             $stderr = StringIO.new
-            
+
             yield
-            
+
             stdout_output = $stdout.string
             stderr_output = $stderr.string
-            
+
             output = ""
             output += stdout_output unless stdout_output.empty?
             output += "\nSTDERR:\n#{stderr_output}" unless stderr_output.empty?
             output = "Command executed successfully (no output)" if output.empty?
-            
+
             output
           ensure
             $stdout = original_stdout

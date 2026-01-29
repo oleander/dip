@@ -23,7 +23,7 @@ describe Dip::MCPServer do
         server = described_class.new
         mcp_server = server.instance_variable_get(:@server)
         tools = mcp_server.tools
-        
+
         expect(tools.length).to be > 0
         # Tools are stored as a hash with tool name as key and tool class as value
         tool_class = tools.values.first
