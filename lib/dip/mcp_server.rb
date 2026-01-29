@@ -50,18 +50,20 @@ module Dip
         @command_config = command
 
         # Set the tool name using the class-level method
-        tool_name @command_name.gsub(" ", "_")
+        # Convert to valid tool name by replacing non-alphanumeric characters with underscores
+        tool_name @command_name.gsub(/[^a-zA-Z0-9_]/, "_")
         description(@command_config[:description] || "Run #{@command_name} command")
 
         input_schema(
           properties: {
             args: {
               type: "string",
-              description: "Additional arguments to pass to the command"
+              description: "Additional command-line arguments as a single string (will be shell-parsed)"
             },
             env: {
               type: "object",
-              description: "Environment variables to set for the command"
+              description: "Environment variables to set for the command (key-value pairs where values are strings)",
+              additionalProperties: {type: "string"}
             }
           }
         )
@@ -81,17 +83,25 @@ module Dip
             all_args = subcmd_args.dup
             all_args += args.shellsplit if args && !args.empty?
 
-            # Merge environment variables into Dip environment
-            Dip.env.merge(env) if env && !env.empty?
+            # Save current environment state
+            original_env_vars = Dip.env.vars.dup
 
-            # Execute the command and capture output
+            # Merge environment variables for this execution
+            temp_env = original_env_vars.dup
+            env.each { |k, v| temp_env[k.to_s] = v.to_s } if env && !env.empty?
+
+            # Execute the command in a subprocess and capture output
             begin
               run_command = Dip::Commands::Run.new(cmd, *all_args)
 
-              # Capture output
-              output = capture_output do
-                run_command.execute
-              end
+              # Get the command configuration
+              command = run_command.instance_variable_get(:@command)
+
+              # Build the full command line
+              cmdline = build_cmdline(command, all_args)
+
+              # Execute in subprocess and capture output
+              output = execute_subprocess(cmdline, temp_env, command[:shell])
 
               MCP::Tool::Response.new([{
                 type: "text",
@@ -107,32 +117,66 @@ module Dip
                 type: "text",
                 text: "Unexpected error: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
               }])
+            ensure
+              # Restore original environment to prevent pollution between calls
+              Dip.env.instance_variable_set(:@vars, original_env_vars)
             end
           end
 
           private
 
-          def capture_output
-            original_stdout = $stdout
-            original_stderr = $stderr
+          def build_cmdline(command, argv)
+            cmd = Dip.env.interpolate(command[:command])
+            argv = [argv] if argv.is_a?(String)
+            argv = argv.map { |arg| Dip.env.interpolate(arg) }
+            cmdline = [cmd, *argv, command[:default_args]].compact
+            if command[:shell]
+              cmdline.join(" ").strip
+            else
+              cmdline
+            end
+          end
 
-            $stdout = StringIO.new
-            $stderr = StringIO.new
+          def execute_subprocess(cmdline, env_vars, shell)
+            # Create pipes for capturing stdout and stderr
+            stdout_r, stdout_w = IO.pipe
+            stderr_r, stderr_w = IO.pipe
 
-            yield
+            pid = Process.spawn(
+              env_vars,
+              cmdline,
+              out: stdout_w,
+              err: stderr_w
+            )
 
-            stdout_output = $stdout.string
-            stderr_output = $stderr.string
+            # Close write ends in parent process
+            stdout_w.close
+            stderr_w.close
 
+            # Read output
+            stdout_output = stdout_r.read
+            stderr_output = stderr_r.read
+
+            # Wait for process to complete
+            Process.wait(pid)
+            status = $?
+
+            # Close read ends
+            stdout_r.close
+            stderr_r.close
+
+            # Build output
             output = ""
             output += stdout_output unless stdout_output.empty?
             output += "\nSTDERR:\n#{stderr_output}" unless stderr_output.empty?
-            output = "Command executed successfully (no output)" if output.empty?
+
+            if status.success?
+              output = "Command executed successfully (no output)" if output.empty?
+            else
+              output += "\nCommand exited with status #{status.exitstatus}" unless output.include?("exited with status")
+            end
 
             output
-          ensure
-            $stdout = original_stdout
-            $stderr = original_stderr
           end
         end
       end

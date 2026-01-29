@@ -15,6 +15,6 @@ end
 begin
   Dip::MCPServer.start
 rescue Dip::Error => e
-  warn "ERROR: #{e.message}"
+  puts "ERROR: #{e.message}"
   exit 1
 end
